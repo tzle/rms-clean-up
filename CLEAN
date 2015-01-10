@@ -4,9 +4,18 @@ dat <- read.csv("smcf-data\RMS_dbo_occ_bas.csv",head=TRUE,sep=",")
 names(dat)  # review headers
 summary(dat)# review value distributions
 
+# a sorted list of unique street names from the file
 street_vec <- c()
-street_vec <- unique(dat$street) # unique list of street names
-sort(street_vec)
+street_vec <- sort(unique(dat$street))
 
 # iteratively correct mis-spellings
+dat$street[dat$street=="01ST"] <- "1ST"
+dat$street[dat$street=="02ND"] <- "2nd"
+dat$street[dat$street=="03RD"] <- "3rd"
+dat$street[dat$street=="04TH"] <- "4th"
+dat$street[dat$street=="05TH"] <- "5th"
 
+dat$street[dat$street=="09TH" | dat$street=="09TH AVE"] <- "9th"
+dat$street[dat$street=="10 TH"] <- "10th"
+
+street_vec <- sort(unique(dat$street))
