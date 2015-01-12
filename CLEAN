@@ -1,5 +1,5 @@
 # load exported RMS Occupancies csv
-dat <- read.csv("smcf-data\RMS_dbo_occ_bas.csv",head=TRUE,sep=",")
+dat <- read.csv("smcf-data/RMS_dbo_occ_bas.csv",head=TRUE,sep=",")
 
 names(dat)  # review headers
 summary(dat)# review value distributions
