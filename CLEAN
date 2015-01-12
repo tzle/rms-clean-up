@@ -4,6 +4,12 @@ dat <- read.csv("smcf-data/RMS_dbo_occ_bas.csv",head=TRUE,sep=",")
 names(dat)  # review headers
 summary(dat)# review value distributions
 
+# ---------------- date values from character to dates & factors
+dat$HistDate <- dat$history_date
+dat$HistDate <- gsub("[[:punct:]]","",dat$HistDate,ignore.case=TRUE) # remove dash punctuation in string, 1Jan12
+dat$HistDate <- as.Date(dat$HistDate,"%d%b%y") #
+
+# ---------------- street names ------------------ 
 # a sorted list of unique street names from the file
 street_vec <- c()
 street_vec <- sort(unique(dat$street))
