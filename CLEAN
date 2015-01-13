@@ -1,13 +1,24 @@
-# load exported RMS Occupancies csv
+# ---------------- load exported RMS Occupancies csv
 dat <- read.csv("smcf-data/RMS_dbo_occ_bas.csv",head=TRUE,sep=",")
 
+# ---------------- review input to verify layout
 names(dat)  # review headers
-summary(dat)# review value distributions
+str(dat) # review structure 
+summary(dat) # review value distributions
 
 # ---------------- date values from character to dates & factors
 dat$HistDate <- dat$history_date
-dat$HistDate <- gsub("[[:punct:]]","",dat$HistDate,ignore.case=TRUE) # remove dash punctuation in string, 1Jan12
-dat$HistDate <- as.Date(dat$HistDate,"%d%b%y") #
+dat$HistDate <- gsub("[[:punct:]]","",dat$HistDate,ignore.case=TRUE) # remove dash punctuation in string, 11Jan12
+dat$HistDate <- as.Date(dat$HistDate,"%d%b%y") # reformats to YYYY-mm-dd, 2012-01-11
+library(lubridate)
+dat$Month <- month(as.POSIXlt(dat$HistDate,format="%Y-%d-%m"))# add month
+summary(dat$Month)
+
+# ---------------- comparing history id to history date to verify real count of priority inspections
+library(plyr)
+count(dat,"history_id") # result: 7214 blank ids
+count(dat,"history_date") # result: 7763 blank dates
+
 
 # ---------------- street names ------------------ 
 # a sorted list of unique street names from the file
