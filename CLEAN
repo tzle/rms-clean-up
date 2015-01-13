@@ -1,3 +1,7 @@
+library(plyr) # count()
+library(lubridate) # month()
+
+# STEP 1
 # ---------------- load exported RMS Occupancies csv
 dat <- read.csv("smcf-data/RMS_dbo_occ_bas.csv",head=TRUE,sep=",")
 
@@ -6,6 +10,28 @@ names(dat)  # review headers
 str(dat) # review structure 
 summary(dat) # review value distributions
 
+
+# STEP 2
+# ---------------- flag inspected
+dat$flag_inspected[dat$history_id != 0] <- 1 	# assign flag to inspected records
+count(dat, “flag_inspected”) 
+
+# ---------------- flag mrip
+dat$flag_mrip[dat$resinumunits >= 1] <- 1 	# assign flag to most obvious MRIP records
+count(dat, “flag_mrip”) 
+
+dat$flag_mrip[is.na(dat$flag_mrip)] <- 0 	# assign 0 to NA values
+count(dat, “flag_mrip”) 
+
+# ---------------- flag cip
+dat$flag_cip[grepl(“CARE HOME”,dat$name)==TRUE] <- 1 	# assign flag “CARE HOME” capitalized	
+count(dat,“flag_cip”) 
+
+dat$flag_cip[grepl(“Care Home”,dat$name)==TRUE] <- 1 	# assign flag “Care Home” capital case
+count(dat,“flag_cip”) 
+
+
+# STEP 4
 # ---------------- date values from character to dates & factors
 dat$HistDate <- dat$history_date
 dat$HistDate <- gsub("[[:punct:]]","",dat$HistDate,ignore.case=TRUE) # remove dash punctuation in string, 11Jan12
@@ -15,7 +41,7 @@ dat$Month <- month(as.POSIXlt(dat$HistDate,format="%Y-%d-%m"))# add month
 summary(dat$Month)
 
 # ---------------- comparing history id to history date to verify real count of priority inspections
-library(plyr)
+
 count(dat,"history_id") # result: 7214 blank ids
 count(dat,"history_date") # result: 7763 blank dates
 
