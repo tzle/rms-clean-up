@@ -1,0 +1,5 @@
+summary(dat)
+summary(dat$businesslicense)
+
+library(plyr)
+count(dat,"businesslicense")
