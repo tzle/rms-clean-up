@@ -1,0 +1,152 @@
+# TASK 1: READ IN the CSV
+#       : keep only the phone & fax fields
+occphone <- read_csv("")
+
+
+# TASK 2: CLEAN the original phone# field into a single field named phcln
+# REPLACE character in string test
+occphone$phcln <- sapply(occphone[[column]],FUN=function(x) gsub("\\(","",x))
+occphone$phcln <- sapply(occphone[[column]],FUN=function(x) gsub("\\)","",x))
+occphone$phcln <- sapply(occphone[[column]],FUN=function(x) gsub("-","",x))
+occphone$phcln <- sapply(occphone[[column]],FUN=function(x) gsub(" ","",x))
+
+
+# TASK 3: CLEAN the fax number field, repeat task 2 on the fax# field
+
+
+# TASK 4: COUNT the characters in the cleaned phone field
+#       : This prepares a before/after comparison of the clean-up
+#       : and a means of verifying the clean-up logic
+occphone$phlen <- apply(occphone,1,function(occphone) nchar(occphone[[#phcln]]))
+
+
+# TASK 5: GET DISTRIBUTION of lengths, we need the max length for Task 6
+as.data.fram(table(occphone$phlen))
+
+
+# TASK 6: SUBSTRING the cleaned phone# into area code, prefix, suffix & extension
+occphone$phclnac <- sapply(test2[,4], function(test2) substr(test2,1,3))
+occphone$phclnpx <- sapply(test2[,4], function(test2) substr(test2,4,6))
+occphone$phclnsx <- sapply(test2[,4], function(test2) substr(test2,7,10))
+occphone$phclnxt <- sapply(test2[,4], function(test2) substr(test2,11,max_length))
+
+
+# TASK 7: GET DISTRIBUTION of areacodes from area code field
+#       : and the distribution of characters beyond 10th character, extensions
+as.data.frame(table(occphone$phclnac))
+as.data.frame(table(occphone$phxt))
+# ALSO CODED AS
+as.data.frame(table(sapply(occphone[,#phcln], function(occphone) substr(occphone,1,3))))
+as.data.frame(table(sapply(occphone[,#phcln], function(occphone) substr(occphone,11,max_length))))
+
+
+# TASK 8: PREPARE the areacode field for concatenating
+test2$clnac <- sapply(test2[,6],function(test2) str_pad(test2,4,SIDE="left",PAD="("))
+test2$clnac <- sapply(test2[,6],function(test2) str_pad(test2,5,SIDE="right",PAD=")"))
+
+
+# TASK 9: PREPARE the prefix field for concatenating
+test2$clnpx <- sapply(test2[,7], function(test2) str_pad(test2,4,"right","-"))
+
+
+# TASK 10 OR 12 : CLEAN the area code field
+test2$clnac[test2$clnac =="(((()"] <- ""
+test2$clnpx[test2$clnpx =="----"] <- ""
+
+
+# TASK 11: CONCATENATE cleaned areacodes,prefix,suffix,extension
+ occphone$phfinal <- do.call(paste, c(occphone[c("clac","clnpx","clnsx")],sep=""))
+
+# TASK 12: CLEAN the area code field 
+occfax$faxfinal[occfax$faxfinal == "(((()----"] <- ""
+
+# TASK 13: OUTPUT csv
+ write.csv(occfax,"rms_occtbl_fax_clean_08292014.csv")
+
+
+# REVIEWING THE DATA - SUBSET of occphonenu field that matches "510"
+occtbl.phone$occphonenu[occtbl.phone$areacode=="510"]
+
+# CONVERT column to character
+transform(occphone, occphonenu = as.character(occphonenu))
+
+# GET LENGTH of each char string in a column
+occphone3$phonelen <- apply(occphone3,1,function(occphone3) nchar(occphone3[[#]]))
+
+# TASK: Clean the original phone# field into a single field named phcln
+# REPLACE character in string test
+occphone$phcln <- sapply(occphone[[2]],FUN=function(x) gsub("\\(","",x))
+occphone$phcln <- sapply(occphone[[8]],FUN=function(x) gsub("\\)","",x))
+occphone$phcln <- sapply(occphone[[8]],FUN=function(x) gsub("-","",x))
+occphone$phcln <- sapply(occphone[[8]],FUN=function(x) gsub(" ","",x))
+
+
+TASK XX: Join 
+
+test2 <- lapply(as.character(test[[2]]), FUN=function(x) gsub("\\(","",x))
+
+
+
+> as.data.frame(table(occphone$phlen))
+   Var1 Freq
+1     0 2060 = ""
+2     1  169 = ""
+3     2    1 = ""
+4     3  330 = ""
+5     6    1 = ""
+6     7   31()
+7     8    3 = ""
+8     9   11 = "", 2 corrected edits
+9    10 3988 = no change
+10   11    4 = 4 corrected edits
+11   13    4 = 4 corrected edits
+12   14    5 = 3 no change made, 1 corrected edit
+13   15    3 = no change
+14   16    1 = no change
+
+> occphone$phcln[occphone$phlen == 16]
+[1] "8007780009x33333"
+
+> occphone$phcln[occphone$phlen == 15]
+[1] "6503413333x4160" "6509695600EX218" "6503482691x1001"
+
+> occphone$phcln[occphone$phlen == 14]
+[1] "8003554666X556" "6666 415 265 2736" "6503721100X222" "6505791010x190" "6505791010x190"
+
+> occphone$phcln[occphone$phlen == 13]
+[1] "650 577 9800 x104" "650 925 984 1371" "6506503435690" "650 650 2451 091"
+
+> occphone$phcln[occphone$phlen == 11]
+[1] "650 213 23200" "66503413313" "65068566921" "66503413313"
+
+> occphone$phcln[occphone$phlen == 9]
+ [1] "652124653" "650931113" "650347488" "650570567" "650341996" "650339588" "650340129" "650 343 084"
+[9] "603418551" "65 212 4653" "605 778 883"
+
+> occphone$phcln[occphone$phlen == 8]
+[1] "65057102" "88889999" "60683006"
+
+> occphone$phcln[occphone$phlen == 7]
+ [1] "3432988" "2124222" "3494190" "5551212" "5259028" "6500858" "3408133" "3426567" "3476730" "3459605"
+[11] "5731920" "3483577" "5781300" "3588993" "3418838" "8889304" "5732424" "3449356" "3589943" "3407939"
+[21] "2860790" "2861719" "4652020" "5739300" "3494441" "3429449" "2861719" "3737738" "3432988" "2124222"
+[31] "2124222"
+
+> occphone$phcln[occphone$phlen == 6]
+[1] "650637"
+
+> occphone$phcln[occphone$phlen == 1]
+  [1] "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6"
+ [25] "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6"
+ [49] "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6"
+ [73] "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6"
+ [97] "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6"
+[121] "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "6"
+[145] "6" "6" "6" "6" "6" "6" "6" "6" "6" "6" "0" "6" "6" "6" "6" "6" "6" "0" "6" "6" "0" "6" "6" "6"
+[169] "2"
+
+-------------------------------------
+begin editing based on the length of the cleaned phone number
+occphone$phcln[occphone$phlen <= 6] <- ""
+occphone$phcln[occphone$phlen <= 6] <- ""
+
