@@ -1,0 +1,15 @@
+# STEP 1: display sorted list of unique values in the fields
+sort(unique(dat$street))
+
+# STEP 2: manually correct misspellings and mistypes
+dat$street[dat$street=="02ND"] <- "2ND"
+dat$street[dat$street=="03RD"] <- "3RD"
+dat$street[dat$street=="04TH" | dat$street=="04th"] <- "4TH"
+dat$street[dat$street=="05th" | dat$street=="05TH"] <- "5TH"
+dat$street[dat$street=="06TH"] <- "6TH"
+dat$street[dat$street=="07TH"] <- "7TH"
+dat$street[dat$street=="08th" | dat$street=="08TH" | dat$streeet=="08TH AVE"] <- "8TH"
+dat$street[dat$street=="09TH" | dat$streeet=="09TH AVE"] <- "9TH"
+dat$street[dat$street=="10 TH"] <- "10TH"
+
+# STEP 3: re-distribute elements to correct fields as needed
