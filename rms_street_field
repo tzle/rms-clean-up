@@ -12,4 +12,8 @@ dat$street[dat$street=="08th" | dat$street=="08TH" | dat$streeet=="08TH AVE"] <-
 dat$street[dat$street=="09TH" | dat$streeet=="09TH AVE"] <- "9TH"
 dat$street[dat$street=="10 TH"] <- "10TH"
 
-# STEP 3: re-distribute elements to correct fields as needed
+
+# STEP 3: re-distribute multi-part elements to correct fields as needed
+dat$streettype[dat$street=="VANESSA DR"] <- "DR"
+dat$street[dat$street=="VANESSA DR"] <- "VANESSA"
+
