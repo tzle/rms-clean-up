@@ -3,7 +3,7 @@ library(lubridate) # month()
 
 # STEP 1
 # ---------------- load exported RMS Occupancies csv
-dat <- read.csv("smcf-data/RMS_dbo_occ_bas.csv",head=TRUE,sep=",")
+dat <- read.csv(file,header=TRUE,sep=",",quote="\"",na.strings="NA", colClasses=NA,nrows=-1,skip=0,check.names=TRUE,stringsAsFactors=FALSE	# load variable
 
 # ---------------- review input to verify layout
 names(dat)  # review headers
@@ -13,15 +13,25 @@ summary(dat) # review value distributions
 
 # STEP 2
 # ---------------- flag inspected
+dat$flag_inspected <- NA
 dat$flag_inspected[dat$history_id != 0] <- 1 	# assign flag to inspected records
+dat$flag_inspected[is.na(dat$flag_inspected)] <- 0
 count(dat, “flag_inspected”) 
 
 # ---------------- flag mrip
-dat$flag_mrip[dat$resinumunits >= 1] <- 1 	# assign flag to most obvious MRIP records
-count(dat, “flag_mrip”) 
+dat$flag_mrip <- NA
+dat$flag_mrip[dat$resinumunits > 1] <- 1 	# assign flag to most obvious MRIP records
+dat$flag_mrip[is.na(dat$flag_mrip)] <- 0 # assign 0 to NA values
+count(dat, “flag_mrip”)
 
-dat$flag_mrip[is.na(dat$flag_mrip)] <- 0 	# assign 0 to NA values
-count(dat, “flag_mrip”) 
+dat$flag_mrip[grepl("APT",dat$name,ignore.case=TRUE)==TRUE] <- 1 
+dat$flag_mrip[grepl("CONDO",dat$name,ignore.case=TRUE)==TRUE] <- 1 
+dat$flag_mrip[grepl("TOWNHOME",dat$name,ignore.case=TRUE)==TRUE] <- 1 
+
+dat$flag_mrip[grepl("APT",dat$complex,ignore.case=TRUE)==TRUE] <- 1 
+dat$flag_mrip[grepl("CONDO",dat$complex,ignore.case=TRUE)==TRUE] <- 1 
+dat$flag_mrip[grepl("TOWNHOME",dat$complex,ignore.case=TRUE)==TRUE] <- 1 
+
 
 # ---------------- flag cip
 dat$flag_cip[grepl(“CARE HOME”,dat$name)==TRUE] <- 1 	# assign flag “CARE HOME” capitalized	
