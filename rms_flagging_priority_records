@@ -1,3 +1,4 @@
+
 library(plyr) # count()
 library(lubridate) # month()
 
@@ -26,19 +27,22 @@ count(dat, “flag_mrip”)
 
 dat$flag_mrip[grepl("APT",dat$name,ignore.case=TRUE)==TRUE] <- 1 
 dat$flag_mrip[grepl("CONDO",dat$name,ignore.case=TRUE)==TRUE] <- 1 
-dat$flag_mrip[grepl("TOWNHOME",dat$name,ignore.case=TRUE)==TRUE] <- 1 
+dat$flag_mrip[grepl("TOWNHOME",dat$name,ignore.case=TRUE)==TRUE] <- 1
+dat$flag_mrip[grepl("TOWNHOUSE",dat$name,ignore.case=TRUE)==TRUE] <- 1
 
 dat$flag_mrip[grepl("APT",dat$complex,ignore.case=TRUE)==TRUE] <- 1 
 dat$flag_mrip[grepl("CONDO",dat$complex,ignore.case=TRUE)==TRUE] <- 1 
 dat$flag_mrip[grepl("TOWNHOME",dat$complex,ignore.case=TRUE)==TRUE] <- 1 
+dat$flag_mrip[grepl("TOWNHOUSE",dat$complex,ignore.case=TRUE)==TRUE] <- 1
 
+# ---------------- flag rcf, Residential Care Facilities
+dat$flag_rcf[grepl(“CARE HOME”,dat$name,ignore.case=TRUE)==TRUE] <- 1 	# assign flag “CARE HOME” capitalized	
+rcf_names <- c()
+rcf_names <- c("BAY WEST HOME","THREE M'S CARE HOME","IDAHO HOME","ADLIFE CARE HOME","GLORY HOME CARE FOR THE AGED","PARK MANOR HOMES","COMFORT HOME II","J K RESIDENTIAL CARE HOME","COBB HOME","PERPETUAL HELP HOME","B & B RESIDENTIAL CARE HOME","VANESSA CARE HOME","BERNIE'S CAREHOME","PACIFIC CARE HOME","CELESTE CARE HOME","JUDY'S HOME FOR THE ELDERLY - R2","LORI'S HOME","PORTOBELLO CARE HOME","KELLY'S HOME","LOLITA'S GUEST HOME","ROMY'S HOME","TRICIA'S HOME - R.2.1.1","PARKSIDE HOME","THERESE RESIDENTIAL CARE HOME","SHOREVIEW HOME","B & B CARE HOME","B & B CARE HOME","B & B CARE HOME","ROBERTA HOME","ST JOSEPHS CARE HOME","ROSIES HOME FOR THE AGED","HERITAGE HOME","ADOBE HOME","PARK AVENUE HOME 1","JUDYS HOME","GUTIERREZ  CARE HOME","BERNADETTE CARE HOME","APPLE TREE HOME #2","JUDY'S HOME","SHOREVIEW HOME II","ATENAR HOME","MARTHA'S HOME","MARTIN'S HOME","ALMADEN HOME ICF/DD-N","PATRICIA HOME","PATRICIA HOME","PETE'S HOME","ANDRE'S HOME","SHOREVIEW CARE HOME","B&B CARE  HOME #2","MARIA'S HOME","BRANDON'S HOME","GLORIA'S HOME","JOSEPH'S HOME","AMAZING HOME","PACIFIC HOME","CORTEZ HOME","JOSEPH'S HOME","LILY'S HOME","NOR CAL HOME CARE II","HOME INSTEAD SENIOR CARE","ISABELLA GILL -CARE HOME","ARSUELO CHAVEZ -  CARE HOME","MARLINDA'S HOME","CRANE HOME","PARKSIDE HOME","NANIS HOME","JUST LIKE HOME","GERMA'S HOME","JUST LIKE HOME DAY CARE","AMMA'S HOME WEST BAY HOUSING","THREE SISTER'S CARE HOME","CHRISTINAS CARE HOME","PARK MANOR HOMES","JORDAN HOME","AMERICAN STAR HOMES","PACIFIC CARE HOME","LOLITA'S QUEST HOME","MARIA'S HOME FOR THE AGED-R2","EXPLORERS HOME DAY CARE","POINSETTIA CARE HOME","JUDY'S HOME","CARE HOME","AM CARE HOME","CHESTER'S HOME","EXPLORERS HOME DAY CARE","NANI'S HOME WESTBAY HOUSING","ROYAL REST HOME","ROYAL REST HOME (NEW)","TLC CARE HOME II","HOME CARE ASSISTANCE","GERIATRIC HOME CARE","HOME AND HOSPITAL HELP INC","SYNERGY HOME CARE","PREFERRED CARE AT HOME")
+dat$flag_rcf[(dat$name %in% rcf_names)==TRUE] <- 1
+count(dat,“flag_rcf”) # 100
 
-# ---------------- flag cip
-dat$flag_cip[grepl(“CARE HOME”,dat$name)==TRUE] <- 1 	# assign flag “CARE HOME” capitalized	
-count(dat,“flag_cip”) 
-
-dat$flag_cip[grepl(“Care Home”,dat$name)==TRUE] <- 1 	# assign flag “Care Home” capital case
-count(dat,“flag_cip”) 
+sort(occ$name[occ$flag_rcf==1]) # display alphabetized list of rcf records by name field
 
 
 # STEP 4
@@ -52,7 +56,7 @@ summary(dat$Month)
 
 # ---------------- comparing history id to history date to verify real count of priority inspections
 
-count(dat,"history_id") # result: 7214 blank ids
+count(dat,"history_id") # result: 7214 values are 0
 count(dat,"history_date") # result: 7763 blank dates
 
 
@@ -60,13 +64,18 @@ count(dat,"history_date") # result: 7763 blank dates
 # a sorted list of unique street names from the file
 street_vec <- c()
 street_vec <- sort(unique(dat$street))
+dat$street <- toupper(dat$street) # make all street values uppercase
 
 # iteratively correct mis-spellings
 dat$street[dat$street=="01ST"] <- "1ST"
-dat$street[dat$street=="02ND"] <- "2nd"
-dat$street[dat$street=="03RD"] <- "3rd"
-dat$street[dat$street=="04TH"] <- "4th"
-dat$street[dat$street=="05TH"] <- "5th"
+dat$street[dat$street=="02ND"] <- "2ND"
+dat$street[dat$street=="03RD"] <- "3RD"
+dat$street[dat$street=="04TH"] <- "4TH"
+dat$street[dat$street=="05TH"] <- "5TH"
+dat$street[dat$street=="06TH"] <- "6TH"
+dat$street[dat$street=="07TH"] <- "7TH"
+dat$street[dat$street=="08TH"] <- "8TH"
+dat$street[dat$street=="09TH"] <- "9TH"
 
 dat$street[dat$street=="09TH" | dat$street=="09TH AVE"] <- "9th"
 dat$street[dat$street=="10 TH"] <- "10th"
