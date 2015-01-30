@@ -13,13 +13,13 @@ summary(dat) # review value distributions
 
 
 # STEP 2
-# ---------------- flag inspected
+#  flag inspected ----------------
 dat$flag_inspected <- NA
 dat$flag_inspected[dat$history_id != 0] <- 1 	# assign flag to inspected records
 dat$flag_inspected[is.na(dat$flag_inspected)] <- 0
 count(dat, “flag_inspected”) 
 
-# ---------------- flag mrip
+#  flag mrip ----------------
 dat$flag_mrip <- NA
 dat$flag_mrip[dat$resinumunits > 1] <- 1 	# assign flag to most obvious MRIP records
 dat$flag_mrip[is.na(dat$flag_mrip)] <- 0 # assign 0 to NA values
@@ -35,7 +35,7 @@ dat$flag_mrip[grepl("CONDO",dat$complex,ignore.case=TRUE)==TRUE] <- 1
 dat$flag_mrip[grepl("TOWNHOME",dat$complex,ignore.case=TRUE)==TRUE] <- 1 
 dat$flag_mrip[grepl("TOWNHOUSE",dat$complex,ignore.case=TRUE)==TRUE] <- 1
 
-# ---------------- flag rcf, Residential Care Facilities
+# flag rcf, Residential Care Facilities ----------------
 dat$flag_rcf[grepl(“CARE HOME”,dat$name,ignore.case=TRUE)==TRUE] <- 1 	# assign flag “CARE HOME” capitalized	
 rcf_names <- c()
 rcf_names <- c("BAY WEST HOME","THREE M'S CARE HOME","IDAHO HOME","ADLIFE CARE HOME","GLORY HOME CARE FOR THE AGED","PARK MANOR HOMES","COMFORT HOME II","J K RESIDENTIAL CARE HOME","COBB HOME","PERPETUAL HELP HOME","B & B RESIDENTIAL CARE HOME","VANESSA CARE HOME","BERNIE'S CAREHOME","PACIFIC CARE HOME","CELESTE CARE HOME","JUDY'S HOME FOR THE ELDERLY - R2","LORI'S HOME","PORTOBELLO CARE HOME","KELLY'S HOME","LOLITA'S GUEST HOME","ROMY'S HOME","TRICIA'S HOME - R.2.1.1","PARKSIDE HOME","THERESE RESIDENTIAL CARE HOME","SHOREVIEW HOME","B & B CARE HOME","B & B CARE HOME","B & B CARE HOME","ROBERTA HOME","ST JOSEPHS CARE HOME","ROSIES HOME FOR THE AGED","HERITAGE HOME","ADOBE HOME","PARK AVENUE HOME 1","JUDYS HOME","GUTIERREZ  CARE HOME","BERNADETTE CARE HOME","APPLE TREE HOME #2","JUDY'S HOME","SHOREVIEW HOME II","ATENAR HOME","MARTHA'S HOME","MARTIN'S HOME","ALMADEN HOME ICF/DD-N","PATRICIA HOME","PATRICIA HOME","PETE'S HOME","ANDRE'S HOME","SHOREVIEW CARE HOME","B&B CARE  HOME #2","MARIA'S HOME","BRANDON'S HOME","GLORIA'S HOME","JOSEPH'S HOME","AMAZING HOME","PACIFIC HOME","CORTEZ HOME","JOSEPH'S HOME","LILY'S HOME","NOR CAL HOME CARE II","HOME INSTEAD SENIOR CARE","ISABELLA GILL -CARE HOME","ARSUELO CHAVEZ -  CARE HOME","MARLINDA'S HOME","CRANE HOME","PARKSIDE HOME","NANIS HOME","JUST LIKE HOME","GERMA'S HOME","JUST LIKE HOME DAY CARE","AMMA'S HOME WEST BAY HOUSING","THREE SISTER'S CARE HOME","CHRISTINAS CARE HOME","PARK MANOR HOMES","JORDAN HOME","AMERICAN STAR HOMES","PACIFIC CARE HOME","LOLITA'S QUEST HOME","MARIA'S HOME FOR THE AGED-R2","EXPLORERS HOME DAY CARE","POINSETTIA CARE HOME","JUDY'S HOME","CARE HOME","AM CARE HOME","CHESTER'S HOME","EXPLORERS HOME DAY CARE","NANI'S HOME WESTBAY HOUSING","ROYAL REST HOME","ROYAL REST HOME (NEW)","TLC CARE HOME II","HOME CARE ASSISTANCE","GERIATRIC HOME CARE","HOME AND HOSPITAL HELP INC","SYNERGY HOME CARE","PREFERRED CARE AT HOME")
@@ -46,7 +46,7 @@ sort(occ$name[occ$flag_rcf==1]) # display alphabetized list of rcf records by na
 
 
 # STEP 4
-# ---------------- date values from character to dates & factors
+# date values from character to dates & factors ----------------
 dat$HistDate <- dat$history_date
 dat$HistDate <- gsub("[[:punct:]]","",dat$HistDate,ignore.case=TRUE) # remove dash punctuation in string, 11Jan12
 dat$HistDate <- as.Date(dat$HistDate,"%d%b%y") # reformats to YYYY-mm-dd, 2012-01-11
@@ -64,9 +64,10 @@ count(dat,"history_date") # result: 7763 blank dates
 # a sorted list of unique street names from the file
 street_vec <- c()
 street_vec <- sort(unique(dat$street))
+
 dat$street <- toupper(dat$street) # make all street values uppercase
 
-# iteratively correct mis-spellings
+# remove leading zeros from numbers
 dat$street[dat$street=="01ST"] <- "1ST"
 dat$street[dat$street=="02ND"] <- "2ND"
 dat$street[dat$street=="03RD"] <- "3RD"
@@ -77,7 +78,11 @@ dat$street[dat$street=="07TH"] <- "7TH"
 dat$street[dat$street=="08TH"] <- "8TH"
 dat$street[dat$street=="09TH"] <- "9TH"
 
+
 dat$street[dat$street=="09TH" | dat$street=="09TH AVE"] <- "9th"
 dat$street[dat$street=="10 TH"] <- "10th"
+
+# display list of street values per letter in the alphabet
+sort(unique(grep("^[A]",occ$street,ignore.case=TRUE,value=TRUE)))
 
 street_vec <- sort(unique(dat$street))
